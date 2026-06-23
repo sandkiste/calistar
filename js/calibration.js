@@ -73,8 +73,8 @@ let worksheet = jspreadsheet(document.getElementById('spreadsheet'), {
         ],
      ],
      tableOverflow: true,
-     tableHeight: '380px',
-     onchange: () => { update(); }
+     tableHeight: '380px'
+     // Removed onchange auto-evaluation tracking loop
 });
 worksheet.hideIndex();
 
@@ -115,10 +115,9 @@ function setNominals() {
     nominal = extractColumnVector(range(0, 27), nomCol);
 }
 
-function changeNumMeasPts() {
+function handleParamChange() {
     hideMeasurementRows();
     setNominals();
-    update();
 }
 
 let numValidMeasurements = [];
@@ -165,20 +164,17 @@ function updateDimensionality() {
     let xResults = calculateDimensionality(range(0, 9));
     xerror = xResults[0]; xsigma = xResults[1];
     document.getElementById('xerror').innerHTML = (xerror * 100).toFixed(3) + '%';
-    document.getElementById('xsigma').innerHTML = (xsigma * 100).toFixed(3) + '%';
     document.getElementById('xcorrection').innerHTML = (-xerror * 100).toFixed(3) + '%';
     document.getElementById('xNumSigma').innerHTML = xsigma > 0 ? (xerror / xsigma).toFixed(1) : '0.0';
 
     let yResults = calculateDimensionality(range(10, 19));
     yerror = yResults[0]; ysigma = yResults[1];
     document.getElementById('yerror').innerHTML = (yerror * 100).toFixed(3) + '%';
-    document.getElementById('ysigma').innerHTML = (ysigma * 100).toFixed(3) + '%';
     document.getElementById('ycorrection').innerHTML = (-yerror * 100).toFixed(3) + '%';
     document.getElementById('yNumSigma').innerHTML = ysigma > 0 ? (yerror / ysigma).toFixed(1) : '0.0';
 
     document.getElementById('yourCorrection').innerHTML = `(${(xerror * 100).toFixed(2)}%, ${(yerror * 100).toFixed(2)}%)`;
 
-    // Calculate Direct PrusaSlicer Scale Percentages
     document.getElementById('slicerscalingX').innerHTML = ((1 / (1 + xerror)) * 100).toFixed(3);
     document.getElementById('slicerscalingY').innerHTML = ((1 / (1 + yerror)) * 100).toFixed(3);
 
@@ -273,7 +269,8 @@ function updateMaterial() {
     document.getElementById('expectedShrinkage').innerHTML = (-expectedShrinkage * 100).toFixed(2) + '%';
 }
 
-function update() {
+// Global invocation execution handler called strictly by user action button
+function processMetrics() {
     updateSigma();
     validateMeasurements();
     updateDimensionality();
@@ -300,6 +297,6 @@ function initPlots() {
 
 window.onload = () => {
     initPlots();
-    changeNumMeasPts();
+    handleParamChange();
     updateMaterial();
 };

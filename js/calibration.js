@@ -65,11 +65,13 @@ let worksheet = jspreadsheet(document.getElementById('spreadsheet'), {
      nestedHeaders:[
         [
             { title: 'Configuration Details', colspan: '3' },
-            { title: 'Physical Metrology Checks', colspan: '5' }
+            { title: 'Physical Metrology Checks (Enter Data Here)', colspan: '5' }
         ],
      ],
      tableOverflow: true,
-     tableHeight: '380px'
+     tableHeight: '380px',
+     // Triggers live calculations automatically whenever user inputs measurements
+     onchange: () => { updateCalculations(); }
 });
 worksheet.hideIndex();
 
@@ -119,6 +121,7 @@ function setNominals() {
 function handleParamChange() {
     hideMeasurementRows();
     setNominals();
+    updateCalculations();
 }
 
 let numValidMeasurements = [];
@@ -287,7 +290,8 @@ function updateMaterial() {
     document.getElementById('expectedShrinkage').innerHTML = (-expectedShrinkage * 100).toFixed(2) + '%';
 }
 
-function processMetrics() {
+// Live running calculation updates triggered as user inputs values
+function updateCalculations() {
     updateSigma();
     validateMeasurements();
     updateDimensionality();

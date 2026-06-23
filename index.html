@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jspreadsheet-ce/dist/index.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jspreadsheet-ce/dist/jspreadsheet.min.css" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsuites/dist/jsuites.min.css" type="text/css" />
-
     <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 <body>
@@ -68,7 +67,6 @@
         <ul>
             <li id="validDimensions">Insufficient dimensional tracking metrics. Check X/Y inputs.</li>
             <li id="validSkew">Insufficient geometry values to safely measure structural skew factors.</li>
-            <li id="outoffamily" style="display:none;">At least one metrics variance appears off-nominal. Double-check manual inputs.</li>
         </ul>
     </div>
     <div id="valideverything" class="alert alert-success" style="display:none;">
@@ -99,10 +97,6 @@
                     <td><span id="yNumSigma">N/A</span></td>
                 </tr>
             </table>
-
-            <div id="dimensionFeedback" class="alert alert-danger" style="display:none;">
-                Critical calibration error detected. Scale metrics vary beyond expected safe operating deviations.
-            </div>
         </div>
 
         <div class="flex-child card">
@@ -135,8 +129,6 @@
 
     <div class="card">
         <h2>PrusaSlicer Tuning Matrix</h2>
-        <p>PrusaSlicer operates directly with physical scaling percentages for thermal profiles rather than dynamic compensation code logic blocks. Choose your target polymer type profile to accurately extract adjustments:</p>
-        
         <table>
             <tr>
                 <td>Target Polymer Type:</td>
@@ -160,13 +152,11 @@
         </table>
 
         <div class="alert alert-success">
-            <strong>PrusaSlicer Correction Strategy:</strong><br>
-            To compensate for your printer's spatial structure layout variations inside PrusaSlicer, modify your global modifier parameters inside your main profile array setup:
+            <strong>PrusaSlicer Correction Strategy:</strong>
             <ul>
                 <li><strong>Target Global X Scaling Factor:</strong> <span id="slicerscalingX" style="font-weight:bold; color:var(--primary-dark);">100.000</span>%</li>
                 <li><strong>Target Global Y Scaling Factor:</strong> <span id="slicerscalingY" style="font-weight:bold; color:var(--primary-dark);">100.000</span>%</li>
             </ul>
-            <small><em>Apply these variables globally within <strong>Print Settings -> Advanced -> Sizing & Coordinates</strong> or modify scale factors directly via your custom canvas interface modifiers when building objects.</em></small>
         </div>
     </div>
 </div>

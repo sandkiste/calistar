@@ -7,4 +7,5 @@ This simplified fork stands on the shoulders of dirtdigger's Calistar (GPL-3.0 l
 Please check out and support his original work here:
 
 Printables: https://www.printables.com/model/778188-calistar-parametric-open-source-alternative-to-cal
+
 GitHub: https://github.com/dirtdigger/fleur_de_cali

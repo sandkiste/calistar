@@ -70,7 +70,6 @@ let worksheet = jspreadsheet(document.getElementById('spreadsheet'), {
      ],
      tableOverflow: true,
      tableHeight: '380px',
-     // Triggers live calculations automatically whenever user inputs measurements
      onchange: () => { updateCalculations(); }
 });
 worksheet.hideIndex();
@@ -176,12 +175,14 @@ function updateDimensionality() {
     xerror = xResults[0]; xsigma = xResults[1];
     document.getElementById('xerror').innerHTML = (xerror * 100).toFixed(3) + '%';
     document.getElementById('xcorrection').innerHTML = (-xerror * 100).toFixed(3) + '%';
+    document.getElementById('xsigma').innerHTML = (xsigma * 100).toFixed(3) + '%';
     document.getElementById('xNumSigma').innerHTML = xsigma > 0 ? (xerror / xsigma).toFixed(1) : '0.0';
 
     let yResults = calculateDimensionality(range(10, 19));
     yerror = yResults[0]; ysigma = yResults[1];
     document.getElementById('yerror').innerHTML = (yerror * 100).toFixed(3) + '%';
     document.getElementById('ycorrection').innerHTML = (-yerror * 100).toFixed(3) + '%';
+    document.getElementById('ysigma').innerHTML = (ysigma * 100).toFixed(3) + '%';
     document.getElementById('yNumSigma').innerHTML = ysigma > 0 ? (yerror / ysigma).toFixed(1) : '0.0';
 
     document.getElementById('yourCorrection').innerHTML = `(${(xerror * 100).toFixed(2)}%, ${(yerror * 100).toFixed(2)}%)`;
@@ -290,7 +291,6 @@ function updateMaterial() {
     document.getElementById('expectedShrinkage').innerHTML = (-expectedShrinkage * 100).toFixed(2) + '%';
 }
 
-// Live running calculation updates triggered as user inputs values
 function updateCalculations() {
     updateSigma();
     validateMeasurements();

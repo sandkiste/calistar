@@ -1,4 +1,4 @@
-#Calistar für den PrusaSlicer 
+# Calistar für den PrusaSlicer 
 
 Ein einfacher Fork von Calistar, der speziell für den PrusaSlicer optimiert wurde, um meine Prusa-Drucker zu testen.
 Dieser vereinfachte Fork basiert auf der grossartigen Arbeit von dirtdigger und seinem Projekt Calistar (lizenziert unter GPL-3.0).

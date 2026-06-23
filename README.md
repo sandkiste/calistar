@@ -1,7 +1,10 @@
-# Calistar für den PrusaSlicer 
+# Calistar for PrusaSlicer 
 
-Ein einfacher Fork von Calistar, der speziell für den PrusaSlicer optimiert wurde, um meine Prusa-Drucker zu testen.
+A simple fork of Calistar, streamlined for PrusaSlicer to test my Prusa printers.
 
-Dieser vereinfachte Fork basiert auf der grossartigen Arbeit von dirtdigger und seinem Projekt Calistar (lizenziert unter GPL-3.0).
+This simplified fork stands on the shoulders of dirtdigger's Calistar (GPL-3.0 licensed). All credit for the heavy lifting goes to him. I merely adapted it for my specific calibration needs.
 
-Das Originalprojekt kannst du auf Printables unter https://www.printables.com/model/778188-calistar-parametric-open-source-alternative-to-cal sowie auf GitHub unter https://github.com/dirtdigger/fleur_de_cali finden.
+Please check out and support his original work here:
+
+Printables: https://www.printables.com/model/778188-calistar-parametric-open-source-alternative-to-cal
+GitHub: https://github.com/dirtdigger/fleur_de_cali

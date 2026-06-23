@@ -25,12 +25,12 @@
         <table>
             <tr>
                 <td>Total width (mm):</td>
-                <td><input type="number" value="120" id="calistarSize" size="5" onchange="setNominals()"/> mm</td>
+                <td><input type="number" value="120" id="calistarSize" size="5" onchange="handleParamChange()"/> mm</td>
             </tr>
             <tr>
                 <td>Number of measurement points:</td>
                 <td>
-                    <select id="numMeasPts" onchange="changeNumMeasPts()">
+                    <select id="numMeasPts" onchange="handleParamChange()">
                         <option>2</option>
                         <option selected="selected">3</option>
                         <option>4</option>
@@ -40,17 +40,21 @@
             </tr>
             <tr>
                 <td>Slicer Scaling:</td>
-                <td><input type="number" value="1.00" id="printScale" step="0.01" onchange="setNominals()"/></td>
+                <td><input type="number" value="1.00" id="printScale" step="0.01" onchange="handleParamChange()"/></td>
             </tr>
             <tr>
                 <td>Caliper error (mm):</td>
-                <td><input type="number" value="0.01" id="caliper_error" step="0.01" onchange="update()"/> mm</td>
+                <td><input type="number" value="0.01" id="caliper_error" step="0.01"/> mm</td>
             </tr>
             <tr>
                 <td>Use Sample Error:</td>
-                <td><input type="checkbox" id="sample_error" checked onchange="update()"/></td>
+                <td><input type="checkbox" id="sample_error" checked/></td>
             </tr>
         </table>
+        
+        <div style="margin-top: 15px; text-align: right;">
+            <button id="btnCalculate" onclick="processMetrics()" style="background-color: var(--primary); color: white; border: none; padding: 10px 20px; font-size: 15px; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">Calculate Metrics</button>
+        </div>
     </div>
 
     <div class="card">

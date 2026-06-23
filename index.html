@@ -21,16 +21,17 @@
     </header>
 
     <div class="card">
-        <h2>Your Parameters</h2>
+        <h2>1. Your Parameters & Print Configuration</h2>
+        <p>Enter the parameters you used to generate or scale your calibration model, then click the button to setup the worksheet below.</p>
         <table>
             <tr>
                 <td>Total width (mm):</td>
-                <td><input type="number" value="120" id="calistarSize" size="5" onchange="handleParamChange()"/> mm</td>
+                <td><input type="number" value="120" id="calistarSize" size="5"/> mm</td>
             </tr>
             <tr>
                 <td>Number of measurement points:</td>
                 <td>
-                    <select id="numMeasPts" onchange="handleParamChange()">
+                    <select id="numMeasPts">
                         <option>2</option>
                         <option selected="selected">3</option>
                         <option>4</option>
@@ -40,43 +41,39 @@
             </tr>
             <tr>
                 <td>Slicer Scaling:</td>
-                <td><input type="number" value="1.00" id="printScale" step="0.01" onchange="handleParamChange()"/></td>
+                <td><input type="number" value="1.00" id="printScale" step="0.01"/></td>
             </tr>
             <tr>
-                <td>Caliper error (mm):</td>
+                <td>Caliper Error / Tolerance (mm):</td>
                 <td><input type="number" value="0.01" id="caliper_error" step="0.01"/> mm</td>
             </tr>
             <tr>
-                <td>Use Sample Error:</td>
+                <td>Use Sample Error Variance:</td>
                 <td><input type="checkbox" id="sample_error" checked/></td>
             </tr>
         </table>
         
         <div style="margin-top: 20px; text-align: right;">
-            <button id="btnCalculate" onclick="processMetrics()" class="calc-btn">Calculate Metrics</button>
+            <button id="btnPrintSetup" onclick="handleParamChange()" class="calc-btn">Print Calistar / Update Nominals</button>
         </div>
     </div>
 
     <div class="card">
-        <h2>Post-Print Worksheet</h2>
-        <p>Allow the print to <em>cool completely</em> before measuring. Work from outside to inside layers.</p>
+        <h2>2. Post-Print Worksheet (Enter Measured Values Here)</h2>
+        <p>Allow your printed part to <em>cool completely</em>. Use your calipers to measure the printed model and enter the real values directly into the <strong>Meas 1, Meas 2, and Meas 3</strong> fields below. The system will live-calculate your deviations.</p>
         <div id="spreadsheet"></div>
     </div>
 
     <div id="measurementWarnings" class="alert alert-warning">
-        <strong>Attention Required:</strong>
-        <ul>
-            <li id="validDimensions">Insufficient dimensional tracking metrics. Check X/Y inputs.</li>
-            <li id="validSkew">Insufficient geometry values to safely measure structural skew factors.</li>
-        </ul>
+        <strong>Status:</strong> Waiting for full X, Y, and Diagonal measurements to calculate advanced calibration metrics.
     </div>
     <div id="valideverything" class="alert alert-success" style="display:none;">
-        Metrics baseline completely populated! Calibration evaluation values calculated below.
+        <strong>Success:</strong> All measurement criteria met! Review your tuning metrics below.
     </div>
 
     <div class="flex-container">
         <div class="flex-child card">
-            <h2>Dimensional Accuracy</h2>
+            <h2>Dimensional Accuracy & Deviation</h2>
             <div id="dimGraph" style="width:100%; height:220px;"></div>
             <table>
                 <tr>

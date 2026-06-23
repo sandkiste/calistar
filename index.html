@@ -59,16 +59,16 @@
     </div>
 
     <div class="card">
-        <h2>2. Post-Print Worksheet (Enter Measured Values Here)</h2>
-        <p>Allow your printed part to <em>cool completely</em>. Use your calipers to measure the printed model and enter the real values directly into the <strong>Meas 1, Meas 2, and Meas 3</strong> fields below. The system will live-calculate your deviations.</p>
+        <h2>2. Post-Print Worksheet</h2>
+        <p>Allow your printed part to cool completely. Measure the printed model and enter the real values directly into the <strong>Meas 1, Meas 2, and Meas 3</strong> cells inside the grid below.</p>
         <div id="spreadsheet"></div>
     </div>
 
     <div id="measurementWarnings" class="alert alert-warning">
-        <strong>Status:</strong> Waiting for full X, Y, and Diagonal measurements to calculate advanced calibration metrics.
+        <strong>Status:</strong> Waiting for measurements inside the grid above to populate tracking matrices.
     </div>
     <div id="valideverything" class="alert alert-success" style="display:none;">
-        <strong>Success:</strong> All measurement criteria met! Review your tuning metrics below.
+        <strong>Success:</strong> All metrics calculated from grid input data.
     </div>
 
     <div class="flex-container">
@@ -95,6 +95,8 @@
                     <td><span id="yNumSigma">N/A</span></td>
                 </tr>
             </table>
+            <div style="margin-top: 10px;"><small id="xsigma-display" style="color:#666;">1&sigma; x-estimate: <span id="xsigma">N/A</span></small></div>
+            <div><small id="ysigma-display" style="color:#666;">1&sigma; y-estimate: <span id="ysigma">N/A</span></small></div>
         </div>
 
         <div class="flex-child card">

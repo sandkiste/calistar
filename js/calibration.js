@@ -82,11 +82,17 @@ function hideMeasurementRows() {
 }
 
 function extractColumnVector(rows, col) {
-    return rows.map(r => Number(worksheet.getValueFromCoords(col, r)));
+    return rows.map(r => {
+        let val = worksheet.getValueFromCoords(col, r);
+        return (val === '' || val === null || val === undefined) ? 0 : parseFloat(val);
+    });
 }
 
 function extractRowVector(row, cols) {
-    return cols.map(c => Number(worksheet.getValueFromCoords(c, row)));
+    return cols.map(c => {
+        let val = worksheet.getValueFromCoords(c, row);
+        return (val === '' || val === null || val === undefined) ? 0 : parseFloat(val);
+    });
 }
 
 function setNominals() {
@@ -97,13 +103,13 @@ function setNominals() {
 
     for (let ii = 0; ii < 5; ii++) {
         let val = Math.max((N - N * ii / M) * printScale, 0);
-        let strVal = val === 0 ? NaN : String(val);
+        let strVal = val === 0 ? '0' : String(val);
         [0, 5, 10, 15].forEach(offset => worksheet.setValueFromCoords(nomCol, ii + offset, strVal, true));
     }
 
     for (let ii = 0; ii < 4; ii++) {
         let val = Math.max((N - N * ii / M) * printScale, 0);
-        let strVal = (val === 0 || ii >= M - 1) ? 0 : String(val);
+        let strVal = (val === 0 || ii >= M - 1) ? '0' : String(val);
         worksheet.setValueFromCoords(nomCol, ii + 20, strVal, true);
         worksheet.setValueFromCoords(nomCol, ii + 24, strVal, true);
     }
@@ -148,7 +154,7 @@ function updateSigma() {
 
 function calculateDimensionality(rows) {
     let numValid = 0, sum = 0, sumsq = 0;
-    let sigma0 = document.getElementById('sample_error').checked ? Number(document.getElementById('caliper_error').value) : 0;
+    let sigma0 = document.getElementById('sample_error').checked ? parseFloat(document.getElementById('caliper_error').value) : 0;
 
     rows.forEach(row => {
         let nom = nominal[row];
@@ -213,7 +219,7 @@ function calculateSkew() {
     alpha = alphaRad * 180 / Math.PI;
 
     let sinAlpha = Math.sin(alphaRad);
-    let sigma0 = document.getElementById('sample_error').checked ? Number(document.getElementById('caliper_error').value) : 0;
+    let sigma0 = document.getElementById('sample_error').checked ? parseFloat(document.getElementById('caliper_error').value) : 0;
     let sig2p = (sigma0 * sigma0) / (p*p);
     let sig2q = (sigma0 * sigma0) / (q*q);
 

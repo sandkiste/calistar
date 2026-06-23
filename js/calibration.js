@@ -1,4 +1,3 @@
-// --- CORE ALGEBRAIC VARIABLES AND STATE MAPS ---
 let mean = [];
 let sigma = [];
 let nominal = [];
@@ -6,8 +5,6 @@ let alpha = 0;
 let alphaSigma = 0;
 let validDimensions = false;
 let validSkew = false;
-let innerOuter = true;
-let offNominal = false;
 let expectedShrinkage = 0;
 let xerror = 0;
 let xsigma = 0;
@@ -22,36 +19,35 @@ const calculateSum = (arr) => {
     return arr.reduce((total, current) => isNaN(current) ? total : total + current, 0);
 };
 
-// Data Structure Definition Array Map
 let dataSchema = [
-    ['Outer', 'X', '1', '', '', '', '120', '=AVERAGE(D1:F1)'],
-    ['Outer', 'X', '2', '', '', '', '100', '=AVERAGE(D2:F2)'],
-    ['Outer', 'X', '3', '', '', '', '80' , '=AVERAGE(D3:F3)'],
-    ['Outer', 'X', '4', '', '', '', '60' , '=AVERAGE(D4:F4)'],
-    ['Outer', 'X', '5', '', '', '', '40' , '=AVERAGE(D5:F5)'],
-    ['Inner', 'X', '1', '', '', '', '120', '=AVERAGE(D6:F6)'],
-    ['Inner', 'X', '2', '', '', '', '100', '=AVERAGE(D7:F7)'],
-    ['Inner', 'X', '3', '', '', '', '80' , '=AVERAGE(D8:F8)'],
-    ['Inner', 'X', '4', '', '', '', '60' , '=AVERAGE(D9:F9)'],
-    ['Inner', 'X', '5', '', '', '', '40' , '=AVERAGE(D10:F10)'],
-    ['Outer', 'Y', '1', '', '', '', '120', '=AVERAGE(D11:F11)'],
-    ['Outer', 'Y', '2', '', '', '', '100', '=AVERAGE(D12:F12)'],
-    ['Outer', 'Y', '3', '', '', '', '80' , '=AVERAGE(D13:F13)'],
-    ['Outer', 'Y', '4', '', '', '', '60' , '=AVERAGE(D14:F14)'],
-    ['Outer', 'Y', '5', '', '', '', '40' , '=AVERAGE(D15:F15)'],
-    ['Inner', 'Y', '1', '', '', '', '120', '=AVERAGE(D16:F16)'],
-    ['Inner', 'Y', '2', '', '', '', '100', '=AVERAGE(D17:F17)'],
-    ['Inner', 'Y', '3', '', '', '', '80' , '=AVERAGE(D18:F18)'],
-    ['Inner', 'Y', '4', '', '', '', '60' , '=AVERAGE(D19:F19)'],
-    ['Inner', 'Y', '5', '', '', '', '40' , '=AVERAGE(D20:F20)'],
-    ['Outer', 'D' ,'1', '', '', '', '120', '=AVERAGE(D21:F21)'],
-    ['Outer', 'D' ,'2', '', '', '', '100', '=AVERAGE(D22:F22)'],
-    ['Outer', 'D' ,'3', '', '', '', '80' , '=AVERAGE(D23:F23)'],
-    ['Outer', 'D' ,'4', '', '', '', '60' , '=AVERAGE(D24:F24)'],
-    ['Outer', 'd' ,'1', '', '', '', '120', '=AVERAGE(D25:F25)'],
-    ['Outer', 'd' ,'2', '', '', '', '100', '=AVERAGE(D26:F26)'],
-    ['Outer', 'd' ,'3', '', '', '', '80' , '=AVERAGE(D27:F27)'],
-    ['Outer', 'd' ,'4', '', '', '', '60' , '=AVERAGE(D28:F28)']
+    ['Outer', 'X', '1', '', '', '', '120', ''],
+    ['Outer', 'X', '2', '', '', '', '100', ''],
+    ['Outer', 'X', '3', '', '', '', '80' , ''],
+    ['Outer', 'X', '4', '', '', '', '60' , ''],
+    ['Outer', 'X', '5', '', '', '', '40' , ''],
+    ['Inner', 'X', '1', '', '', '', '120', ''],
+    ['Inner', 'X', '2', '', '', '', '100', ''],
+    ['Inner', 'X', '3', '', '', '', '80' , ''],
+    ['Inner', 'X', '4', '', '', '', '60' , ''],
+    ['Inner', 'X', '5', '', '', '', '40' , ''],
+    ['Outer', 'Y', '1', '', '', '', '120', ''],
+    ['Outer', 'Y', '2', '', '', '', '100', ''],
+    ['Outer', 'Y', '3', '', '', '', '80' , ''],
+    ['Outer', 'Y', '4', '', '', '', '60' , ''],
+    ['Outer', 'Y', '5', '', '', '', '40' , ''],
+    ['Inner', 'Y', '1', '', '', '', '120', ''],
+    ['Inner', 'Y', '2', '', '', '', '100', ''],
+    ['Inner', 'Y', '3', '', '', '', '80' , ''],
+    ['Inner', 'Y', '4', '', '', '', '60' , ''],
+    ['Inner', 'Y', '5', '', '', '', '40' , ''],
+    ['Outer', 'D' ,'1', '', '', '', '120', ''],
+    ['Outer', 'D' ,'2', '', '', '', '100', ''],
+    ['Outer', 'D' ,'3', '', '', '', '80' , ''],
+    ['Outer', 'D' ,'4', '', '', '', '60' , ''],
+    ['Outer', 'd' ,'1', '', '', '', '120', ''],
+    ['Outer', 'd' ,'2', '', '', '', '100', ''],
+    ['Outer', 'd' ,'3', '', '', '', '80' , ''],
+    ['Outer', 'd' ,'4', '', '', '', '60' , '']
 ];
 
 let worksheet = jspreadsheet(document.getElementById('spreadsheet'), {
@@ -69,12 +65,11 @@ let worksheet = jspreadsheet(document.getElementById('spreadsheet'), {
      nestedHeaders:[
         [
             { title: 'Configuration Details', colspan: '3' },
-            { title: 'Physical Metrology Checks', colspan: '3' }
+            { title: 'Physical Metrology Checks', colspan: '5' }
         ],
      ],
      tableOverflow: true,
      tableHeight: '380px'
-     // Removed onchange auto-evaluation tracking loop
 });
 worksheet.hideIndex();
 
@@ -125,22 +120,29 @@ let numValidMeasurements = [];
 function updateMean() {
     numValidMeasurements = range(0, 27).map(ii => {
         let w = extractRowVector(ii, [3, 4, 5]);
-        return calculateSum(w.map(x => x > 0 ? 1 : 0));
+        return w.filter(x => !isNaN(x) && x > 0).length;
     });
 
     mean = range(0, 27).map((ii) => {
         let w = extractRowVector(ii, [3, 4, 5]);
-        let s = calculateSum(mult(w, w.map(x => x > 0 ? 1 : 0)));
-        return numValidMeasurements[ii] > 0 ? s / numValidMeasurements[ii] : 0;
+        let validVals = w.filter(x => !isNaN(x) && x > 0);
+        let m = validVals.length > 0 ? calculateSum(validVals) / validVals.length : 0;
+        if (m > 0) {
+            worksheet.setValueFromCoords(7, ii, m.toFixed(2), true);
+        } else {
+            worksheet.setValueFromCoords(7, ii, '', true);
+        }
+        return m;
     });
 }
 
 function updateSigma() {
     updateMean();
     sigma = range(0, 27).map((ii) => {
-        let w = extractRowVector(ii, [3, 4, 5]).map(x => (x - mean[ii]) * (x > 0 ? 1 : 0));
-        let s2 = dot(w, w);
-        return numValidMeasurements[ii] > 1 ? Math.sqrt(s2 / (numValidMeasurements[ii] - 1)) : 0;
+        let w = extractRowVector(ii, [3, 4, 5]).filter(x => !isNaN(x) && x > 0);
+        if (w.length <= 1) return 0;
+        let diffs = w.map(x => (x - mean[ii]) * (x - mean[ii]));
+        return Math.sqrt(calculateSum(diffs) / (w.length - 1));
     });
 }
 
@@ -175,8 +177,8 @@ function updateDimensionality() {
 
     document.getElementById('yourCorrection').innerHTML = `(${(xerror * 100).toFixed(2)}%, ${(yerror * 100).toFixed(2)}%)`;
 
-    document.getElementById('slicerscalingX').innerHTML = ((1 / (1 + xerror)) * 100).toFixed(3);
-    document.getElementById('slicerscalingY').innerHTML = ((1 / (1 + yerror)) * 100).toFixed(3);
+    document.getElementById('slicerscalingX').innerHTML = xerror !== 0 ? ((1 / (1 + xerror)) * 100).toFixed(3) : '100.000';
+    document.getElementById('slicerscalingY').innerHTML = yerror !== 0 ? ((1 / (1 + yerror)) * 100).toFixed(3) : '100.000';
 
     let dGraph = document.getElementById('dimGraph');
     dGraph.data[0].x = [yerror * 100, xerror * 100];
@@ -189,12 +191,12 @@ function updateDimensionality() {
 function computeTotalLength(rows) {
     let sum = 0, nominalSum = 0;
     rows.forEach(row => {
-        if (numValidMeasurements[row] > 0) {
+        if (numValidMeasurements[row] > 0 && nominal[row] > 0) {
             sum += mean[row];
             nominalSum += nominal[row];
         }
     });
-    return nominalSum > 0 ? sum / nominalSum : 1;
+    return nominalSum > 0 ? sum / nominalSum : 0;
 }
 
 function calculateSkew() {
@@ -203,6 +205,8 @@ function calculateSkew() {
     let a = computeTotalLength([0, 1, 2, 3, 4]) * Math.sqrt(2) / 2;
     let b = computeTotalLength([10, 11, 12, 13, 14]) * Math.sqrt(2) / 2;
 
+    if (p === 0 || q === 0 || a === 0 || b === 0) return [NaN, 0];
+
     let cosAlpha = (p * p - q * q) / (4 * a * b);
     cosAlpha = Math.max(-1, Math.min(1, cosAlpha)); 
     let alphaRad = Math.acos(cosAlpha);
@@ -210,8 +214,8 @@ function calculateSkew() {
 
     let sinAlpha = Math.sin(alphaRad);
     let sigma0 = document.getElementById('sample_error').checked ? Number(document.getElementById('caliper_error').value) : 0;
-    let sig2p = (sigma0 * sigma0) / (p*p || 1);
-    let sig2q = (sigma0 * sigma0) / (q*q || 1);
+    let sig2p = (sigma0 * sigma0) / (p*p);
+    let sig2q = (sigma0 * sigma0) / (q*q);
 
     let gradp = Math.abs(p / (2 * a * b * (sinAlpha || 1)));
     let gradq = Math.abs(q / (2 * a * b * (sinAlpha || 1)));
@@ -224,24 +228,32 @@ function updateSkew() {
     let v = calculateSkew();
     alpha = v[0]; alphaSigma = v[1];
 
-    document.getElementById('parAngle').innerHTML = isNaN(alpha) ? 'N/A' : alpha.toFixed(4) + '°';
-    document.getElementById('skewAngle').innerHTML = isNaN(alpha) ? 'N/A' : (alpha - 90).toFixed(4) + '°';
-    document.getElementById('skewCorrection').innerHTML = isNaN(alpha) ? 'N/A' : (90 - alpha).toFixed(4) + '°';
+    if (isNaN(alpha)) {
+        document.getElementById('parAngle').innerHTML = 'N/A';
+        document.getElementById('skewAngle').innerHTML = 'N/A';
+        document.getElementById('skewCorrection').innerHTML = 'N/A';
+        document.getElementById('skewNumSigmas').innerHTML = '0.00';
+        return;
+    }
+
+    document.getElementById('parAngle').innerHTML = alpha.toFixed(4) + '°';
+    document.getElementById('skewAngle').innerHTML = (alpha - 90).toFixed(4) + '°';
+    document.getElementById('skewCorrection').innerHTML = (90 - alpha).toFixed(4) + '°';
     document.getElementById('skewNumSigmas').innerHTML = alphaSigma > 0 ? Math.abs((90 - alpha) / alphaSigma).toFixed(2) : '0.00';
 
     let sGraph = document.getElementById('skewGraph');
-    sGraph.data[0].x = [alpha - 90 || 0];
-    sGraph.data[0].error_x.array = [2 * alphaSigma || 0];
-    sGraph.data[1].x = [alpha - 90 || 0];
-    sGraph.data[1].error_x.array = [alphaSigma || 0];
+    sGraph.data[0].x = [alpha - 90];
+    sGraph.data[0].error_x.array = [2 * alphaSigma];
+    sGraph.data[1].x = [alpha - 90];
+    sGraph.data[1].error_x.array = [alphaSigma];
     Plotly.redraw('skewGraph');
 }
 
 function validateMeasurements() {
-    let validx = calculateSum(mean.slice(0, 10)) > 0;
-    let validy = calculateSum(mean.slice(10, 19)) > 0;
-    let validD = calculateSum(mean.slice(20, 23)) > 0;
-    let validd = calculateSum(mean.slice(24, 27)) > 0;
+    let validx = mean.slice(0, 10).some(x => x > 0);
+    let validy = mean.slice(10, 20).some(x => x > 0);
+    let validD = mean.slice(20, 24).some(x => x > 0);
+    let validd = mean.slice(24, 28).some(x => x > 0);
 
     validDimensions = validx && validy;
     validSkew = validDimensions && validD && validd;
@@ -269,7 +281,6 @@ function updateMaterial() {
     document.getElementById('expectedShrinkage').innerHTML = (-expectedShrinkage * 100).toFixed(2) + '%';
 }
 
-// Global invocation execution handler called strictly by user action button
 function processMetrics() {
     updateSigma();
     validateMeasurements();
